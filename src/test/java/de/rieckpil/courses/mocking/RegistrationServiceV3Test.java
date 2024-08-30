@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-// @RunWith(MockitoJUnitRunner.class)
+// This annotation calls MockitoAnnotations.openMocks() behind the scenes
 @ExtendWith(MockitoExtension.class)
 class RegistrationServiceV3Test {
 
@@ -24,5 +24,9 @@ class RegistrationServiceV3Test {
 
   @Test
   void shouldRegisterUnknownUser() {
+    System.out.println(userRepository.getClass());
+    System.out.println(bannedUsersClient.getClass());
+
+    System.out.println(cut.toString());
   }
 }
