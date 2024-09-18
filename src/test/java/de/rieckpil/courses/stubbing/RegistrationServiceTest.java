@@ -32,6 +32,13 @@ public class RegistrationServiceTest {
 
   @Test
   void defaultBehaviour() {
+    System.out.println(userRepository.findByUsername("mike"));
+    System.out.println(userRepository.save(new User()));
+    System.out.println(bannedUsersClient.isBanned("mike", new Address()));
+    System.out.println(bannedUsersClient.amountOfBannedAccounts());
+    System.out.println(bannedUsersClient.amountOfGloballyBannedAccounts());
+    System.out.println(bannedUsersClient.banRate());
+    System.out.println(bannedUsersClient.bannedUserId());
   }
 
   @Test
