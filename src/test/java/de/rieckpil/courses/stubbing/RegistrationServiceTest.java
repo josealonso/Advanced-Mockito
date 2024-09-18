@@ -75,13 +75,20 @@ public class RegistrationServiceTest {
 
   @Test
   void basicStubbingUsageCallRealMethod() {
-    when(bannedUsersClient.isBanned("duke", any(Address.class))).thenCallRealMethod();
+    when(bannedUsersClient.isBanned(eq("duke"), any(Address.class))).thenCallRealMethod();
 
     System.out.println(bannedUsersClient.isBanned("duke", new Address()));
   }
 
   @Test
   void basicStubbingUsageThenAnswer() {
+    when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+      User user = invocation.getArgument(0);
+      user.setId(42L);
+      return user;
+    });
+
+    System.out.println(userRepository.save(new User()).getId());
   }
 
   @Test
