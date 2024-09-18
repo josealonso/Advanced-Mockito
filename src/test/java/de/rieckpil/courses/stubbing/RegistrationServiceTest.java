@@ -52,6 +52,18 @@ public class RegistrationServiceTest {
 
   @Test
   void basicStubbingWithArgumentMatchers() {
+    Mockito.when(bannedUsersClient.isBanned("duke", ArgumentMatchers.any(Address.class))).thenReturn(true); // InvalidMatchers
+                                                                                                            // Exception
+    Mockito.when(bannedUsersClient
+        .isBanned(ArgumentMatchers.eq("duke"), ArgumentMatchers.any(Address.class))).thenReturn(true); // Solution
+
+    Mockito.when(bannedUsersClient
+        .isBanned(ArgumentMatchers.argThat(s -> s.length() <= 3), ArgumentMatchers.isNull())).thenReturn(false);
+
+    System.out.println(bannedUsersClient.isBanned("duke", new Address())); // true
+    System.out.println(bannedUsersClient.isBanned("foo", null)); // false, because the last stubbing rule is applied in
+                                                                 // case
+                                                                 // of conflict.
   }
 
   @Test
