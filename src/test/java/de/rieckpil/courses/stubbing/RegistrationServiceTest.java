@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+@MockitoSettings(strictness = Strictness.LENIENT) // IMPORTANT: default strictness is severe.
 public class RegistrationServiceTest {
 
   @Mock
@@ -43,6 +43,11 @@ public class RegistrationServiceTest {
 
   @Test
   void basicStubbing() {
+    Mockito.when(bannedUsersClient.isBanned("duke", new Address())).thenReturn(true);
+
+    System.out.println(bannedUsersClient.isBanned("duke", new Address())); // true
+    System.out.println(bannedUsersClient.isBanned("duke", null)); // false
+    System.out.println(bannedUsersClient.isBanned("mike", new Address())); // false
   }
 
   @Test
