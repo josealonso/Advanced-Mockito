@@ -75,6 +75,9 @@ public class RegistrationServiceTest {
 
   @Test
   void basicStubbingUsageCallRealMethod() {
+    when(bannedUsersClient.isBanned("duke", any(Address.class))).thenCallRealMethod();
+
+    System.out.println(bannedUsersClient.isBanned("duke", new Address()));
   }
 
   @Test
