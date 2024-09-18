@@ -93,6 +93,9 @@ public class RegistrationServiceTest {
 
   @Test
   void shouldNotAllowRegistrationOfBannedUsers() {
+    when(bannedUsersClient.isBanned(eq("duke"), any(Address.class))).thenReturn(true);
+    assertThrows(IllegalArgumentException.class,
+        () -> cut.registerUser("duke", Utils.createContactInformation("duke@java.com")));
   }
 
   @Test
