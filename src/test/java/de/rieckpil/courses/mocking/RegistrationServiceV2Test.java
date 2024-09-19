@@ -31,6 +31,6 @@ class RegistrationServiceV2Test {
     System.out.println(userRepository.getClass());
     System.out.println(bannedUsersClient.getClass());
 
-    System.out.println(cut.toString());
+    System.out.println(cut.getClass());
   }
 }

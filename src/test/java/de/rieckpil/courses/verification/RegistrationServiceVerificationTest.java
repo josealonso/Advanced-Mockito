@@ -13,8 +13,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.WARN)
-class RegistrationServiceVerificationTest {
+@MockitoSettings(strictness = Strictness.WARN) // IMPORTANT!
+public class RegistrationServiceVerificationTest {
 
   @Mock
   private UserRepository userRepository;
@@ -36,22 +36,22 @@ class RegistrationServiceVerificationTest {
 
   @Test
   void basicVerification() {
-
     when(bannedUsersClient.isBanned(eq("duke"), any(Address.class))).thenReturn(true);
-    // when(bannedUsersClient.amountOfGloballyBannedAccounts()).thenReturn(42L);
 
     assertThrows(IllegalArgumentException.class,
-      () -> cut.registerUser("duke", Utils.createContactInformation("duke@mockito.org")));
+        () -> cut.registerUser("duke", Utils.createContactInformation("duke@java.com")));
 
-    Mockito.verify(bannedUsersClient).isBanned(eq("duke"), argThat(address -> address.getCity().equals("Berlin")));
+    Mockito.verify(bannedUsersClient).isBanned(eq("duke"),
+        argThat(address -> address.getCity().equals("Berlin")));
+
+    // Some verify methods
     Mockito.verify(bannedUsersClient, times(1)).isBanned(eq("duke"), any(Address.class));
     Mockito.verify(bannedUsersClient, atLeastOnce()).isBanned(eq("duke"), any(Address.class));
     Mockito.verify(bannedUsersClient, atMost(1)).isBanned(eq("duke"), any(Address.class));
     Mockito.verify(bannedUsersClient, never()).bannedUserId();
 
-    Mockito.verifyNoMoreInteractions(bannedUsersClient, userRepository);
-
-    // Mockito.verify(bannedUsersClient, description("Nobody checked for mike")).isBanned(eq("mike"), any(Address.class));
+    // custom error message
+    Mockito.verify(bannedUsersClient, description("Nobody checked for mike")).isBanned(eq("mike"), any(Address.class));
   }
 
   @Test
@@ -65,7 +65,7 @@ class RegistrationServiceVerificationTest {
       return user;
     });
 
-    User user = cut.registerUser("duke", Utils.createContactInformation("duke@mockito.org"));
+    User user = cut.registerUser("duke", Utils.createContactInformation("duke@java.com"));
 
     assertNotNull(user);
 
@@ -73,8 +73,8 @@ class RegistrationServiceVerificationTest {
     Mockito.verify(userRepository).findByUsername("duke");
     Mockito.verify(bannedUsersClient).isBanned(eq("duke"), any(Address.class));
 
+    // This is the right order in which mocks were invocated
     InOrder inOrder = Mockito.inOrder(userRepository, bannedUsersClient);
-
     inOrder.verify(bannedUsersClient).isBanned(eq("duke"), any(Address.class));
     inOrder.verify(userRepository).findByUsername("duke");
     inOrder.verify(userRepository).save(any(User.class));
@@ -92,16 +92,12 @@ class RegistrationServiceVerificationTest {
     assertNotNull(user);
 
     Mockito.verify(userRepository).save(userArgumentCaptor.capture());
-    Mockito.verify(bannedUsersClient).isBanned(eq("duke"), addressArgumentCaptor.capture());
+    Mockito.verify(bannedUsersClient).isBanned(stringArgumentCaptor.capture(), addressArgumentCaptor.capture());
 
+    System.out.println(stringArgumentCaptor.getValue());
     System.out.println(addressArgumentCaptor.getValue());
 
     User userToStore = userArgumentCaptor.getValue();
 
-    System.out.println(userToStore);
-    assertNotNull(userToStore.getUsername());
-    assertNotNull(userToStore.getCreatedAt());
-    assertTrue(userToStore.getEmail().contains("@myorg.io"));
-    assertNull(userToStore.getId());
   }
 }

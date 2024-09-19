@@ -22,12 +22,10 @@ class EventNotifierTest {
   @Test
   void voidMethodStubbing() {
     // Mockito.when(eventNotifier.notifyNewUserCreation("duke")).thenReturn("duke");
-    // Mockito.doThrow(new RuntimeException("Error")).when(eventNotifier).notifyNewUserCreation("duke");
-
     Mockito
-      .doNothing()
-      .doThrow(new RuntimeException("Error"))
-      .when(eventNotifier).notifyNewUserCreation("duke");
+        .doNothing()
+        .doThrow(new RuntimeException("Error"))
+        .when(eventNotifier).notifyNewUserCreation("duke");
 
     eventNotifier.notifyNewUserCreation("duke");
     assertThrows(RuntimeException.class, () -> eventNotifier.notifyNewUserCreation("duke"));
@@ -35,13 +33,7 @@ class EventNotifierTest {
 
   @Test
   void doReturnExample() {
-
-    // Mockito.when(bannedUsersClient.amountOfBannedAccounts()).thenReturn(42);
-
     Mockito.doReturn(42).when(bannedUsersClient).amountOfBannedAccounts();
-
-    // Mockito.doReturn("DUKE").when(bannedUsersClient).amountOfBannedAccounts();
-
-    System.out.println(bannedUsersClient.amountOfBannedAccounts());
+    // doReturn is equivalent to thenReturn, but it is not type safe.
   }
 }
