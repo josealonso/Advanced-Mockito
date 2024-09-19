@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.WARN)
+@MockitoSettings(strictness = Strictness.WARN) // IMPORTANT!
 public class RegistrationServiceVerificationTest {
 
   @Mock
@@ -36,6 +36,22 @@ public class RegistrationServiceVerificationTest {
 
   @Test
   void basicVerification() {
+    when(bannedUsersClient.isBanned(eq("duke"), any(Address.class))).thenReturn(true);
+
+    assertThrows(IllegalArgumentException.class,
+        () -> cut.registerUser("duke", Utils.createContactInformation("duke@java.com")));
+
+    Mockito.verify(bannedUsersClient).isBanned(eq("duke"),
+        argThat(address -> address.getCity().equals("Berlin")));
+
+    // Some verify methods
+    Mockito.verify(bannedUsersClient, times(1)).isBanned(eq("duke"), any(Address.class));
+    Mockito.verify(bannedUsersClient, atLeastOnce()).isBanned(eq("duke"), any(Address.class));
+    Mockito.verify(bannedUsersClient, atMost(1)).isBanned(eq("duke"), any(Address.class));
+    Mockito.verify(bannedUsersClient, never()).bannedUserId();
+
+    // custom error message
+    Mockito.verify(bannedUsersClient, description("Nobody checked for mike")).isBanned(eq("mike"), any(Address.class));
   }
 
   @Test
