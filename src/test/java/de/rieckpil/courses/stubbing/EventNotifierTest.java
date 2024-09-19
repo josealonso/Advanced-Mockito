@@ -33,5 +33,7 @@ class EventNotifierTest {
 
   @Test
   void doReturnExample() {
+    Mockito.doReturn(42).when(bannedUsersClient).amountOfBannedAccounts();
+    // doReturn is equivalent to thenReturn, but it is not type safe.
   }
 }
