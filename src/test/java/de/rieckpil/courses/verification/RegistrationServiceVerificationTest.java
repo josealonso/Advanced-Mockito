@@ -56,6 +56,28 @@ public class RegistrationServiceVerificationTest {
 
   @Test
   void additionalVerificationOptions() {
+
+    when(bannedUsersClient.isBanned(eq("duke"), any(Address.class))).thenReturn(false);
+    when(userRepository.findByUsername("duke")).thenReturn(null);
+    when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+      User user = invocation.getArgument(0);
+      user.setId(42L);
+      return user;
+    });
+
+    User user = cut.registerUser("duke", Utils.createContactInformation("duke@java.com"));
+
+    assertNotNull(user);
+
+    Mockito.verify(userRepository).save(any(User.class));
+    Mockito.verify(userRepository).findByUsername("duke");
+    Mockito.verify(bannedUsersClient).isBanned(eq("duke"), any(Address.class));
+
+    // This is the right order in which mocks were invocated
+    InOrder inOrder = Mockito.inOrder(userRepository, bannedUsersClient);
+    inOrder.verify(bannedUsersClient).isBanned(eq("duke"), any(Address.class));
+    inOrder.verify(userRepository).findByUsername("duke");
+    inOrder.verify(userRepository).save(any(User.class));
   }
 
   @Test
